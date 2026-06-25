@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/data/mock_data.dart';
+import 'package:flutter_ecommerce/providers/theme_provider.dart';
 import 'package:flutter_ecommerce/utils/constants.dart';
 import 'package:flutter_ecommerce/widgets/custom_app_bar.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,12 +13,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _darkMode = false;
-
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: 'Profile',
         showBackButton: true,
@@ -28,10 +30,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: Theme.of(context).cardColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(themeProvider.isDarkMode ? 0.2 : 0.05),
                     blurRadius: 8,
                   ),
                 ],
@@ -43,13 +45,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.person_rounded,
                       size: 40,
-                      color: AppColors.primary,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -63,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     mockUserProfile['email'] as String,
                     style: AppTextStyle.bodySmall(
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -151,9 +153,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: 'Dark Mode',
                     subtitle: 'Toggle dark mode',
                     trailing: Switch(
-                      value: _darkMode,
+                      value: themeProvider.isDarkMode,
                       onChanged: (value) {
-                        setState(() => _darkMode = value);
+                        themeProvider.toggleTheme(value);
                       },
                     ),
                     onTap: null,
@@ -227,9 +229,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,13 +268,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 date,
                 style: AppTextStyle.bodySmall(
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
                 ),
               ),
               Text(
                 amount,
                 style: AppTextStyle.labelLarge(
-                  color: AppColors.primary,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ],
@@ -294,21 +296,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: Theme.of(context).dividerColor),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.primaryLight,
+                color: Theme.of(context).primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Icon(
                 icon,
-                color: AppColors.primary,
+                color: Theme.of(context).primaryColor,
                 size: 20,
               ),
             ),
@@ -324,16 +326,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     subtitle,
                     style: AppTextStyle.bodySmall(
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
                     ),
                   ),
                 ],
               ),
             ),
             trailing ??
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
-                  color: AppColors.textTertiary,
+                  color: Theme.of(context).disabledColor,
                   size: 16,
                 ),
           ],

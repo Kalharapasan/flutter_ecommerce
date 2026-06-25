@@ -222,7 +222,7 @@ Home Screen (Products Grid)
 ## 📊 Performance Optimization
 
 - **Lazy Loading**: Products loaded with pagination
-- **Image Caching**: Network images cached locally
+- **Image Caching**: Local images cached 
 - **State Management**: Only affected widgets rebuild on state change
 - **List Optimization**: Using GridView builder for efficient rendering
 

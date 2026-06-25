@@ -58,11 +58,11 @@ class _ProductCardState extends State<ProductCard>
         scale: _scaleAnimation,
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(AppRadius.lg),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withOpacity(Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -76,7 +76,9 @@ class _ProductCardState extends State<ProductCard>
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: AppColors.borderLight,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.05)
+                        : AppColors.borderLight,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(AppRadius.lg),
                       topRight: Radius.circular(AppRadius.lg),
@@ -84,23 +86,34 @@ class _ProductCardState extends State<ProductCard>
                   ),
                   child: Stack(
                     children: [
-                      // Image with fallback
-                      Image.asset(
-                        widget.product.image,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: AppColors.borderLight,
-                            child: const Center(
-                              child: Icon(
-                                Icons.image_not_supported,
-                                size: 48,
-                                color: AppColors.textTertiary,
-                              ),
-                            ),
-                          );
-                        },
+                      // Image with fallback wrapped in Hero
+                      Hero(
+                        tag: 'product-image-${widget.product.id}',
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(AppRadius.lg),
+                            topRight: Radius.circular(AppRadius.lg),
+                          ),
+                          child: Image.asset(
+                            widget.product.image,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white.withOpacity(0.05)
+                                    : AppColors.borderLight,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.image_not_supported,
+                                    size: 48,
+                                    color: AppColors.textTertiary,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                       // In Cart Badge
                       if (widget.isInCart)
@@ -109,7 +122,7 @@ class _ProductCardState extends State<ProductCard>
                           right: AppSpacing.sm,
                           child: Container(
                             padding: const EdgeInsets.all(AppSpacing.xs),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppColors.success,
                               shape: BoxShape.circle,
                             ),

@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late List<Product> _filteredProducts;
+  late TextEditingController _searchController;
   String _selectedCategory = 'All';
   String _searchQuery = '';
   bool _isGridView = true;
@@ -24,7 +25,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     _filteredProducts = mockProducts;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _filterProducts() {
@@ -41,6 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updateSearch(String query) {
     setState(() {
       _searchQuery = query;
+      if (_searchController.text != query) {
+        _searchController.text = query;
+      }
       _filterProducts();
     });
   }
@@ -71,9 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
-        title: 'ShopHub',
+        title: 'E-Commerce Store',
         showCartIcon: true,
         onCartPressed: () {
           Navigator.pushNamed(context, '/cart');
@@ -85,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: TextField(
+              controller: _searchController,
               onChanged: _updateSearch,
               decoration: InputDecoration(
                 hintText: 'Search products...',
@@ -96,14 +108,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     : null,
                 filled: true,
-                fillColor: AppColors.white,
+                fillColor: Theme.of(context).cardColor,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor),
                 ),
               ),
             ),
@@ -129,12 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.white,
+                            : Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(AppRadius.lg),
                         border: Border.all(
                           color: isSelected
                               ? AppColors.primary
-                              : AppColors.border,
+                              : Theme.of(context).dividerColor,
                         ),
                       ),
                       child: Center(
@@ -143,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: AppTextStyle.labelLarge(
                             color: isSelected
                                 ? AppColors.white
-                                : AppColors.textPrimary,
+                                : Theme.of(context).textTheme.labelLarge?.color,
                           ),
                         ),
                       ),
@@ -173,14 +185,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: _isGridView
                               ? AppColors.primary
-                              : AppColors.white,
+                              : Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(AppRadius.md),
                         ),
                         child: Icon(
                           Icons.grid_view,
                           color: _isGridView
                               ? AppColors.white
-                              : AppColors.textSecondary,
+                              : Theme.of(context).disabledColor,
                           size: 18,
                         ),
                       ),
@@ -193,14 +205,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: !_isGridView
                               ? AppColors.primary
-                              : AppColors.white,
+                              : Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(AppRadius.md),
                         ),
                         child: Icon(
                           Icons.list,
                           color: !_isGridView
                               ? AppColors.white
-                              : AppColors.textSecondary,
+                              : Theme.of(context).disabledColor,
                           size: 18,
                         ),
                       ),

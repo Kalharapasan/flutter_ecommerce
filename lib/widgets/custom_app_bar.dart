@@ -27,6 +27,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconBgColor = isDark ? Colors.white.withOpacity(0.1) : AppColors.borderLight;
+    final iconColor = isDark ? Colors.white : AppColors.textPrimary;
+
     return AppBar(
       title: Text(
         title,
@@ -34,20 +38,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: centerTitle,
       elevation: 0,
-      backgroundColor: AppColors.white,
-      foregroundColor: AppColors.textPrimary,
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
       leading: showBackButton
           ? GestureDetector(
               onTap: onBackPressed ?? () => Navigator.pop(context),
               child: Container(
                 margin: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.borderLight,
+                  color: iconBgColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_back,
-                  color: AppColors.textPrimary,
+                  color: iconColor,
                   size: 20,
                 ),
               ),
@@ -65,12 +69,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.sm),
                       decoration: BoxDecoration(
-                        color: AppColors.borderLight,
+                        color: iconBgColor,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.shopping_cart_outlined,
-                        color: AppColors.textPrimary,
+                        color: iconColor,
                         size: 22,
                       ),
                     ),
@@ -113,7 +117,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         preferredSize: const Size.fromHeight(1),
         child: Divider(
           height: 1,
-          color: AppColors.border,
+          color: Theme.of(context).dividerColor,
           thickness: 1,
         ),
       ),

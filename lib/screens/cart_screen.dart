@@ -15,7 +15,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: 'Shopping Cart',
         showBackButton: true,
@@ -46,10 +46,10 @@ class _CartScreenState extends State<CartScreen> {
               // Cart Summary and Checkout
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: Theme.of(context).cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.05),
                       blurRadius: 8,
                       offset: const Offset(0, -2),
                     ),
@@ -76,7 +76,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Divider(
-                      color: AppColors.border,
+                      color: Theme.of(context).dividerColor,
                       thickness: 1,
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -128,7 +128,9 @@ class _CartScreenState extends State<CartScreen> {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: AppColors.borderLight,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withOpacity(0.05)
+                  : AppColors.borderLight,
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -170,9 +172,9 @@ class _CartScreenState extends State<CartScreen> {
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Row(
         children: [
@@ -181,21 +183,26 @@ class _CartScreenState extends State<CartScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.borderLight,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withOpacity(0.05)
+                  : AppColors.borderLight,
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
-            child: Image.network(
-              cartItem.product.image,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                  child: Icon(
-                    Icons.image_not_supported,
-                    size: 32,
-                    color: AppColors.textTertiary,
-                  ),
-                );
-              },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Image.asset(
+                cartItem.product.image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 32,
+                      color: AppColors.textTertiary,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -250,7 +257,7 @@ class _CartScreenState extends State<CartScreen> {
               // Quantity Controls
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Row(
@@ -271,7 +278,7 @@ class _CartScreenState extends State<CartScreen> {
                           size: 16,
                           color: cartItem.quantity > 1
                               ? AppColors.primary
-                              : AppColors.textTertiary,
+                              : Theme.of(context).disabledColor,
                         ),
                       ),
                     ),

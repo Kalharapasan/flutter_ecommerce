@@ -76,7 +76,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     final isInCart = cartProvider.isInCart(widget.product.id);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: 'Product Details',
         showBackButton: true,
@@ -95,22 +95,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               child: Container(
                 width: double.infinity,
                 height: 300,
-                color: AppColors.white,
-                child: Image.asset(
-                  widget.product.image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppColors.borderLight,
-                      child: const Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          size: 80,
-                          color: AppColors.textTertiary,
+                color: Theme.of(context).cardColor,
+                child: Hero(
+                  tag: 'product-image-${widget.product.id}',
+                  child: Image.asset(
+                    widget.product.image,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withOpacity(0.05)
+                            : AppColors.borderLight,
+                        child: const Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 80,
+                            color: AppColors.textTertiary,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -200,7 +205,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   const SizedBox(height: AppSpacing.lg),
                   // Divider
                   Divider(
-                    color: AppColors.border,
+                    color: Theme.of(context).dividerColor,
                     thickness: 1,
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -249,8 +254,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       vertical: AppSpacing.sm,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.white,
-                      border: Border.all(color: AppColors.border),
+                      color: Theme.of(context).cardColor,
+                      border: Border.all(color: Theme.of(context).dividerColor),
                       borderRadius: BorderRadius.circular(AppRadius.lg),
                     ),
                     child: Row(
@@ -264,7 +269,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             Icons.remove_rounded,
                             color: _quantity > 1
                                 ? AppColors.primary
-                                : AppColors.textTertiary,
+                                : Theme.of(context).disabledColor,
                             size: 20,
                           ),
                         ),

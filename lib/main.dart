@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/providers/cart_provider.dart';
+import 'package:flutter_ecommerce/providers/theme_provider.dart';
 import 'package:flutter_ecommerce/screens/cart_screen.dart';
 import 'package:flutter_ecommerce/screens/home_screen.dart';
 import 'package:flutter_ecommerce/screens/profile_screen.dart';
@@ -17,27 +18,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CartProvider(),
-      child: MaterialApp(
-        title: 'ShopHub',
-        theme: AppTheme.lightTheme(),
-        darkTheme: AppTheme.darkTheme(),
-        themeMode: ThemeMode.light,
-        home: const MainNavigationShell(),
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/home':
-              return MaterialPageRoute(builder: (_) => const HomeScreen());
-            case '/cart':
-              return MaterialPageRoute(builder: (_) => const CartScreen());
-            case '/profile':
-              return MaterialPageRoute(builder: (_) => const ProfileScreen());
-            case '/splash':
-              return MaterialPageRoute(builder: (_) => const SplashScreen());
-            default:
-              return MaterialPageRoute(builder: (_) => const SplashScreen());
-          }
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            title: 'E-Commerce Store',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme(),
+            darkTheme: AppTheme.darkTheme(),
+            themeMode: themeProvider.themeMode,
+            home: const MainNavigationShell(),
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case '/home':
+                  return MaterialPageRoute(builder: (_) => const HomeScreen());
+                case '/cart':
+                  return MaterialPageRoute(builder: (_) => const CartScreen());
+                case '/profile':
+                  return MaterialPageRoute(builder: (_) => const ProfileScreen());
+                case '/splash':
+                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+                default:
+                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+              }
+            },
+          );
         },
       ),
     );

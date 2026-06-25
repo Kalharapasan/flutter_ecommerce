@@ -51,7 +51,7 @@ class AppRadius {
 }
 
 class AppTextStyle {
-  static TextStyle displayLarge({Color color = AppColors.textPrimary}) {
+  static TextStyle displayLarge({Color? color}) {
     return TextStyle(
       fontSize: 32,
       fontWeight: FontWeight.bold,
@@ -60,7 +60,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle displayMedium({Color color = AppColors.textPrimary}) {
+  static TextStyle displayMedium({Color? color}) {
     return TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle headlineLarge({Color color = AppColors.textPrimary}) {
+  static TextStyle headlineLarge({Color? color}) {
     return TextStyle(
       fontSize: 24,
       fontWeight: FontWeight.w700,
@@ -77,7 +77,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle headlineSmall({Color color = AppColors.textPrimary}) {
+  static TextStyle headlineSmall({Color? color}) {
     return TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle bodyLarge({Color color = AppColors.textPrimary}) {
+  static TextStyle bodyLarge({Color? color}) {
     return TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w500,
@@ -94,7 +94,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle bodyMedium({Color color = AppColors.textPrimary}) {
+  static TextStyle bodyMedium({Color? color}) {
     return TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w400,
@@ -103,7 +103,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle bodySmall({Color color = AppColors.textSecondary}) {
+  static TextStyle bodySmall({Color? color}) {
     return TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
@@ -112,7 +112,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle labelLarge({Color color = AppColors.textPrimary}) {
+  static TextStyle labelLarge({Color? color}) {
     return TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
@@ -121,7 +121,7 @@ class AppTextStyle {
     );
   }
 
-  static TextStyle labelSmall({Color color = AppColors.textSecondary}) {
+  static TextStyle labelSmall({Color? color}) {
     return TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w500,
@@ -208,17 +208,37 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      cardColor: const Color(0xFF1F2937),
+      dividerColor: Colors.white12,
       colorScheme: ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         error: AppColors.error,
         surface: const Color(0xFF1F2937),
+        background: const Color(0xFF111827),
       ),
       scaffoldBackgroundColor: const Color(0xFF111827),
       appBarTheme: const AppBarTheme(
         elevation: 0,
         backgroundColor: Color(0xFF1F2937),
         foregroundColor: AppColors.white,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF1F2937),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderSide: const BorderSide(color: Colors.white12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderSide: const BorderSide(color: Colors.white12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        ),
+        contentPadding: const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
