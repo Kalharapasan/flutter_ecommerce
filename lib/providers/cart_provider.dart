@@ -1,43 +1,37 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_ecommerce/model/cart_item.dart';
 import 'package:flutter_ecommerce/model/product.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class CartProvider extends ChangeNotifier {
+  static const _key = 'db_cart';
+
   final List<CartItem> _items = [];
 
-  List<CartItem> get items => _items;
-
+  List<CartItem> get items => List.unmodifiable(_items);
   int get itemCount => _items.length;
+  double get totalPrice => _items.fold(0.0, (s, i) => s + i.subtotal);
+  int get totalItems => _items.fold(0, (s, i) => s + i.quantity);
 
-  double get totalPrice {
-    return _items.fold(0.0, (sum, item) => sum + item.subtotal);
-  }
-
-  int get totalItems {
-    return _items.fold(0, (sum, item) => sum + item.quantity);
-  }
 
   void addToCart(Product product) {
-    final existingItem = _items.firstWhere(
-      (item) => item.product.id == product.id,
+    final existing = _items.firstWhere(
+      (i) => i.product.id == product.id,
       orElse: () => CartItem(product: product, quantity: 0),
     );
-
-    if (existingItem.quantity > 0) {
-      existingItem.quantity++;
+    if (existing.quantity > 0) {
+      existing.quantity++;
     } else {
       _items.add(CartItem(product: product, quantity: 1));
     }
-
-    _saveCart();
+    _save();
     notifyListeners();
   }
 
   void removeFromCart(int productId) {
-    _items.removeWhere((item) => item.product.id == productId);
-    _saveCart();
+    _items.removeWhere((i) => i.product.id == productId);
+    _save();
     notifyListeners();
   }
 
@@ -46,84 +40,55 @@ class CartProvider extends ChangeNotifier {
       removeFromCart(productId);
       return;
     }
-
-    final item = _items.firstWhere(
-      (item) => item.product.id == productId,
-      orElse: () => CartItem(product: Product(
-        id: -1,
-        name: '',
-        price: 0,
-        description: '',
-        rating: 0,
-        reviews: 0,
-        image: '',
-        category: '',
-        inStock: 0,
-      ), quantity: 0),
-    );
-
-    if (item.product.id != -1) {
-      item.quantity = quantity;
-      _saveCart();
+    final idx = _items.indexWhere((i) => i.product.id == productId);
+    if (idx != -1) {
+      _items[idx].quantity = quantity;
+      _save();
       notifyListeners();
     }
   }
 
   void clearCart() {
     _items.clear();
-    _saveCart();
+    _save();
     notifyListeners();
   }
 
-  bool isInCart(int productId) {
-    return _items.any((item) => item.product.id == productId);
-  }
+  bool isInCart(int productId) => _items.any((i) => i.product.id == productId);
 
   int getCartQuantity(int productId) {
-    final item = _items.firstWhere(
-      (item) => item.product.id == productId,
-      orElse: () => CartItem(product: Product(
-        id: -1,
-        name: '',
-        price: 0,
-        description: '',
-        rating: 0,
-        reviews: 0,
-        image: '',
-        category: '',
-        inStock: 0,
-      ), quantity: 0),
-    );
-    return item.product.id != -1 ? item.quantity : 0;
+    try {
+      return _items.firstWhere((i) => i.product.id == productId).quantity;
+    } catch (_) {
+      return 0;
+    }
   }
 
-  // Local storage methods
-  Future<void> _saveCart() async {
+
+  Future<void> _save() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final cartData = json.encode(
-        _items.map((item) => item.toJson()).toList(),
-      );
-      await prefs.setString('cart_items', cartData);
+      await prefs.setString(
+          _key, json.encode(_items.map((i) => i.toJson()).toList()));
     } catch (e) {
-      debugPrint('Error saving cart: $e');
+      debugPrint('CartProvider _save error: $e');
     }
   }
 
   Future<void> loadCart() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final cartData = prefs.getString('cart_items');
-      if (cartData != null) {
-        final List<dynamic> decodedData = json.decode(cartData);
+      final raw = prefs.getString(_key);
+      if (raw != null) {
+        final List decoded = json.decode(raw) as List;
         _items.clear();
-        for (var item in decodedData) {
-          _items.add(CartItem.fromJson(item as Map<String, dynamic>));
+        for (final e in decoded) {
+          _items.add(CartItem.fromJson(e as Map<String, dynamic>));
         }
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Error loading cart: $e');
+      debugPrint('CartProvider loadCart error: $e');
     }
   }
 }

@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_ecommerce/data/mock_data.dart';
+
 
 class Address {
   final String id;
-  final String label; // Home, Work, etc.
+  final String label;
   final String fullName;
   final String phone;
   final String street;
@@ -25,19 +27,17 @@ class Address {
     this.isDefault = false,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      id: json['id'] as String,
-      label: json['label'] as String,
-      fullName: json['fullName'] as String,
-      phone: json['phone'] as String,
-      street: json['street'] as String,
-      city: json['city'] as String,
-      state: json['state'] as String,
-      zipCode: json['zipCode'] as String,
-      isDefault: json['isDefault'] as bool? ?? false,
-    );
-  }
+  factory Address.fromJson(Map<String, dynamic> j) => Address(
+        id: j['id'] as String,
+        label: j['label'] as String,
+        fullName: j['fullName'] as String,
+        phone: j['phone'] as String,
+        street: j['street'] as String,
+        city: j['city'] as String,
+        state: j['state'] as String,
+        zipCode: j['zipCode'] as String,
+        isDefault: j['isDefault'] == true || j['isDefault'] == 1,
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -61,19 +61,18 @@ class Address {
     String? state,
     String? zipCode,
     bool? isDefault,
-  }) {
-    return Address(
-      id: id ?? this.id,
-      label: label ?? this.label,
-      fullName: fullName ?? this.fullName,
-      phone: phone ?? this.phone,
-      street: street ?? this.street,
-      city: city ?? this.city,
-      state: state ?? this.state,
-      zipCode: zipCode ?? this.zipCode,
-      isDefault: isDefault ?? this.isDefault,
-    );
-  }
+  }) =>
+      Address(
+        id: id ?? this.id,
+        label: label ?? this.label,
+        fullName: fullName ?? this.fullName,
+        phone: phone ?? this.phone,
+        street: street ?? this.street,
+        city: city ?? this.city,
+        state: state ?? this.state,
+        zipCode: zipCode ?? this.zipCode,
+        isDefault: isDefault ?? this.isDefault,
+      );
 }
 
 class OrderItem {
@@ -97,21 +96,19 @@ class OrderItem {
     this.paymentMethod,
   });
 
-  factory OrderItem.fromJson(Map<String, dynamic> json) {
-    return OrderItem(
-      orderNumber: json['orderNumber'] as String,
-      date: json['date'] as String,
-      status: json['status'] as String,
-      amount: json['amount'] as String,
-      statusColor: json['statusColor'] as String,
-      items: (json['items'] as List<dynamic>?)
-              ?.map((e) => e as Map<String, dynamic>)
-              .toList() ??
-          [],
-      address: json['address'] as String?,
-      paymentMethod: json['paymentMethod'] as String?,
-    );
-  }
+  factory OrderItem.fromJson(Map<String, dynamic> j) => OrderItem(
+        orderNumber: j['orderNumber'] as String,
+        date: j['date'] as String,
+        status: j['status'] as String,
+        amount: j['amount'] as String,
+        statusColor: j['statusColor'] as String,
+        items: (j['items'] as List<dynamic>?)
+                ?.map((e) => Map<String, dynamic>.from(e as Map))
+                .toList() ??
+            [],
+        address: j['address'] as String?,
+        paymentMethod: j['paymentMethod'] as String?,
+      );
 
   Map<String, dynamic> toJson() => {
         'orderNumber': orderNumber,
@@ -123,112 +120,155 @@ class OrderItem {
         'address': address,
         'paymentMethod': paymentMethod,
       };
+
+  OrderItem copyWith({String? status, String? statusColor}) => OrderItem(
+        orderNumber: orderNumber,
+        date: date,
+        status: status ?? this.status,
+        amount: amount,
+        statusColor: statusColor ?? this.statusColor,
+        items: items,
+        address: address,
+        paymentMethod: paymentMethod,
+      );
 }
 
-class UserDataProvider extends ChangeNotifier {
-  String _name = 'Pasan Kalhara';
-  String _email = 'kalhara@gmail.com';
-  String _phone = '';
-  List<Address> _addresses = [];
-  List<OrderItem> _orders = [];
 
-  String get name => _name;
+class UserDataProvider extends ChangeNotifier {
+  static const _keyProfile   = 'db_user_profile';
+  static const _keyAddresses = 'db_addresses';
+  static const _keyOrders    = 'db_orders';
+
+  String _name  = '';
+  String _email = '';
+  String _phone = '';
+  List<Address>   _addresses = [];
+  List<OrderItem> _orders    = [];
+
+  String get name  => _name;
   String get email => _email;
   String get phone => _phone;
-  List<Address> get addresses => _addresses;
-  List<OrderItem> get orders => _orders;
-  Address? get defaultAddress =>
-      _addresses.firstWhere((a) => a.isDefault, orElse: () => _addresses.isEmpty ? Address(id: '', label: '', fullName: '', phone: '', street: '', city: '', state: '', zipCode: '') : _addresses.first);
+  List<Address>   get addresses => List.unmodifiable(_addresses);
+  List<OrderItem> get orders    => List.unmodifiable(_orders);
 
-  UserDataProvider() {
-    _loadData();
+  Address? get defaultAddress {
+    if (_addresses.isEmpty) return null;
+    try {
+      return _addresses.firstWhere((a) => a.isDefault);
+    } catch (_) {
+      return _addresses.first;
+    }
   }
 
-  Future<void> _loadData() async {
+  UserDataProvider() {
+    _load();
+  }
+
+
+  Future<void> _load() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      _name = prefs.getString('user_name') ?? 'Pasan Kalhara';
-      _email = prefs.getString('user_email') ?? 'kalhara@gmail.com';
-      _phone = prefs.getString('user_phone') ?? '';
 
-      final addressesJson = prefs.getString('user_addresses');
-      if (addressesJson != null) {
-        final List<dynamic> decoded = json.decode(addressesJson);
-        _addresses = decoded.map((e) => Address.fromJson(e as Map<String, dynamic>)).toList();
+      final profileRaw = prefs.getString(_keyProfile);
+      if (profileRaw != null) {
+        final m = json.decode(profileRaw) as Map<String, dynamic>;
+        _name  = m['name']  as String? ?? '';
+        _email = m['email'] as String? ?? '';
+        _phone = m['phone'] as String? ?? '';
+      } else {
+        // Seed from mock_data.dart
+        _name  = mockUserProfile['name']  as String;
+        _email = mockUserProfile['email'] as String;
+        _phone = mockUserProfile['phone'] as String? ?? '';
+        await _saveProfile();
       }
 
-      final ordersJson = prefs.getString('user_orders');
-      if (ordersJson != null) {
-        final List<dynamic> decoded = json.decode(ordersJson);
-        _orders = decoded.map((e) => OrderItem.fromJson(e as Map<String, dynamic>)).toList();
+
+      final addrRaw = prefs.getString(_keyAddresses);
+      if (addrRaw != null) {
+        final list = json.decode(addrRaw) as List;
+        _addresses = list
+            .map((e) => Address.fromJson(e as Map<String, dynamic>))
+            .toList();
       } else {
-        // Seed default orders on first run
-        _orders = [
-          OrderItem(
-            orderNumber: '#ORD-001234',
-            date: 'Dec 20, 2024',
-            status: 'Delivered',
-            amount: '\$149.99',
-            statusColor: 'success',
-            paymentMethod: 'Credit Card',
-            address: '123 Main St, Colombo, WP 10000',
-            items: [
-              {'name': 'Premium Wireless Headphones', 'qty': 1, 'price': '\$149.99'},
-            ],
-          ),
-          OrderItem(
-            orderNumber: '#ORD-001233',
-            date: 'Dec 15, 2024',
-            status: 'Delivered',
-            amount: '\$89.99',
-            statusColor: 'success',
-            paymentMethod: 'PayPal',
-            address: '123 Main St, Colombo, WP 10000',
-            items: [
-              {'name': 'Bluetooth Speaker', 'qty': 1, 'price': '\$89.99'},
-            ],
-          ),
-          OrderItem(
-            orderNumber: '#ORD-001232',
-            date: 'Dec 10, 2024',
-            status: 'In Transit',
-            amount: '\$45.99',
-            statusColor: 'warning',
-            paymentMethod: 'Credit Card',
-            address: '456 Office Park, Colombo, WP 10200',
-            items: [
-              {'name': 'Portable Phone Charger', 'qty': 1, 'price': '\$45.99'},
-            ],
-          ),
-        ];
+        // Seed from mock_data.dart
+        _addresses = mockAddresses
+            .map((e) => Address.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+        await _saveAddresses();
+      }
+
+      final ordersRaw = prefs.getString(_keyOrders);
+      if (ordersRaw != null) {
+        final list = json.decode(ordersRaw) as List;
+        _orders = list
+            .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        // Seed from mock_data.dart
+        _orders = mockOrders
+            .map((e) => OrderItem.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
         await _saveOrders();
       }
 
       notifyListeners();
     } catch (e) {
-      debugPrint('Error loading user data: $e');
+      debugPrint('UserDataProvider _load error: $e');
     }
   }
 
-  Future<void> updateProfile({required String name, required String email, required String phone}) async {
-    _name = name;
+  Future<void> _saveProfile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          _keyProfile,
+          json.encode({'name': _name, 'email': _email, 'phone': _phone}));
+    } catch (e) {
+      debugPrint('_saveProfile error: $e');
+    }
+  }
+
+  Future<void> _saveAddresses() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          _keyAddresses,
+          json.encode(_addresses.map((a) => a.toJson()).toList()));
+    } catch (e) {
+      debugPrint('_saveAddresses error: $e');
+    }
+  }
+
+  Future<void> _saveOrders() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          _keyOrders,
+          json.encode(_orders.map((o) => o.toJson()).toList()));
+    } catch (e) {
+      debugPrint('_saveOrders error: $e');
+    }
+  }
+
+  
+  Future<void> updateProfile({
+    required String name,
+    required String email,
+    required String phone,
+  }) async {
+    _name  = name;
     _email = email;
     _phone = phone;
     notifyListeners();
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_name', name);
-      await prefs.setString('user_email', email);
-      await prefs.setString('user_phone', phone);
-    } catch (e) {
-      debugPrint('Error saving profile: $e');
-    }
+    await _saveProfile();
   }
 
   Future<void> addAddress(Address address) async {
     if (address.isDefault) {
-      _addresses = _addresses.map((a) => a.copyWith(isDefault: false)).toList();
+      _addresses =
+          _addresses.map((a) => a.copyWith(isDefault: false)).toList();
     }
     _addresses.add(address);
     notifyListeners();
@@ -236,12 +276,13 @@ class UserDataProvider extends ChangeNotifier {
   }
 
   Future<void> updateAddress(Address address) async {
-    final index = _addresses.indexWhere((a) => a.id == address.id);
-    if (index == -1) return;
+    final idx = _addresses.indexWhere((a) => a.id == address.id);
+    if (idx == -1) return;
     if (address.isDefault) {
-      _addresses = _addresses.map((a) => a.copyWith(isDefault: false)).toList();
+      _addresses =
+          _addresses.map((a) => a.copyWith(isDefault: false)).toList();
     }
-    _addresses[index] = address;
+    _addresses[idx] = address;
     notifyListeners();
     await _saveAddresses();
   }
@@ -253,28 +294,28 @@ class UserDataProvider extends ChangeNotifier {
   }
 
   Future<void> setDefaultAddress(String addressId) async {
-    _addresses = _addresses.map((a) => a.copyWith(isDefault: a.id == addressId)).toList();
+    _addresses = _addresses
+        .map((a) => a.copyWith(isDefault: a.id == addressId))
+        .toList();
     notifyListeners();
     await _saveAddresses();
   }
 
-  Future<void> _saveAddresses() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final encoded = json.encode(_addresses.map((a) => a.toJson()).toList());
-      await prefs.setString('user_addresses', encoded);
-    } catch (e) {
-      debugPrint('Error saving addresses: $e');
-    }
+
+  Future<void> addOrder(OrderItem order) async {
+    _orders.insert(0, order);
+    notifyListeners();
+    await _saveOrders();
   }
 
-  Future<void> _saveOrders() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final encoded = json.encode(_orders.map((o) => o.toJson()).toList());
-      await prefs.setString('user_orders', encoded);
-    } catch (e) {
-      debugPrint('Error saving orders: $e');
+  Future<void> updateOrderStatus(
+      String orderNumber, String status, String statusColor) async {
+    final idx = _orders.indexWhere((o) => o.orderNumber == orderNumber);
+    if (idx != -1) {
+      _orders[idx] =
+          _orders[idx].copyWith(status: status, statusColor: statusColor);
+      notifyListeners();
     }
+    await _saveOrders();
   }
 }

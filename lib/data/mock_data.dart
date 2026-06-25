@@ -1,11 +1,13 @@
 import 'package:flutter_ecommerce/model/product.dart';
 
+
 final List<Product> mockProducts = [
   Product(
     id: 1,
     name: 'Premium Wireless Headphones',
     price: 149.99,
-    description: 'High-quality wireless headphones with active noise cancellation, 30-hour battery life, and premium sound quality. Perfect for music lovers and professionals.',
+    description:
+        'High-quality wireless headphones with active noise cancellation, 30-hour battery life, and premium sound quality. Perfect for music lovers and professionals.',
     rating: 4.8,
     reviews: 245,
     image: 'data/images/1.jpg',
@@ -16,7 +18,8 @@ final List<Product> mockProducts = [
     id: 2,
     name: 'Smart Watch Series 5',
     price: 299.99,
-    description: 'Advanced smartwatch with heart rate monitor, GPS, water resistance, and 5-day battery life. Compatible with iOS and Android devices.',
+    description:
+        'Advanced smartwatch with heart rate monitor, GPS, water resistance, and 5-day battery life. Compatible with iOS and Android devices.',
     rating: 4.6,
     reviews: 189,
     image: 'data/images/2.jpg',
@@ -27,7 +30,8 @@ final List<Product> mockProducts = [
     id: 3,
     name: 'Portable Phone Charger',
     price: 45.99,
-    description: '20000mAh portable power bank with fast charging support. Lightweight and compact design with dual USB ports for simultaneous charging.',
+    description:
+        '20000mAh portable power bank with fast charging support. Lightweight and compact design with dual USB ports for simultaneous charging.',
     rating: 4.7,
     reviews: 512,
     image: 'data/images/3.jpg',
@@ -38,7 +42,8 @@ final List<Product> mockProducts = [
     id: 4,
     name: 'USB-C Charging Cable',
     price: 12.99,
-    description: 'Durable 2-meter USB-C cable with fast charging capability. Reinforced connectors for extended lifespan and reliable performance.',
+    description:
+        'Durable 2-meter USB-C cable with fast charging capability. Reinforced connectors for extended lifespan and reliable performance.',
     rating: 4.5,
     reviews: 834,
     image: 'data/images/4.jpg',
@@ -49,7 +54,8 @@ final List<Product> mockProducts = [
     id: 5,
     name: 'Wireless Mouse Pro',
     price: 59.99,
-    description: 'Ergonomic wireless mouse with precision tracking and silent clicks. Perfect for office work and gaming with 18-month battery life.',
+    description:
+        'Ergonomic wireless mouse with precision tracking and silent clicks. Perfect for office work and gaming with 18-month battery life.',
     rating: 4.4,
     reviews: 367,
     image: 'data/images/5.jpg',
@@ -60,7 +66,8 @@ final List<Product> mockProducts = [
     id: 6,
     name: 'Mechanical Keyboard',
     price: 129.99,
-    description: 'Premium mechanical keyboard with RGB backlight, hot-swappable switches, and programmable keys. Ideal for gamers and typists.',
+    description:
+        'Premium mechanical keyboard with RGB backlight, hot-swappable switches, and programmable keys. Ideal for gamers and typists.',
     rating: 4.9,
     reviews: 423,
     image: 'data/images/6.jpg',
@@ -71,7 +78,8 @@ final List<Product> mockProducts = [
     id: 7,
     name: 'Webcam HD 1080p',
     price: 79.99,
-    description: 'Full HD webcam with auto-focus and stereo microphone. Perfect for video conferencing, streaming, and content creation.',
+    description:
+        'Full HD webcam with auto-focus and stereo microphone. Perfect for video conferencing, streaming, and content creation.',
     rating: 4.6,
     reviews: 276,
     image: 'data/images/7.jpg',
@@ -82,7 +90,8 @@ final List<Product> mockProducts = [
     id: 8,
     name: 'Monitor Stand Adjustable',
     price: 34.99,
-    description: 'Adjustable monitor stand for better ergonomics. Supports up to 15kg with cable management system included.',
+    description:
+        'Adjustable monitor stand for better ergonomics. Supports up to 15kg with cable management system included.',
     rating: 4.3,
     reviews: 198,
     image: 'data/images/8.jpg',
@@ -93,7 +102,8 @@ final List<Product> mockProducts = [
     id: 9,
     name: 'Laptop Cooling Pad',
     price: 39.99,
-    description: 'Aluminum laptop cooling pad with dual fans and USB power. Reduces laptop temperature and extends lifespan.',
+    description:
+        'Aluminum laptop cooling pad with dual fans and USB power. Reduces laptop temperature and extends lifespan.',
     rating: 4.5,
     reviews: 289,
     image: 'data/images/9.jpg',
@@ -104,7 +114,8 @@ final List<Product> mockProducts = [
     id: 10,
     name: 'Screen Protector Glass',
     price: 9.99,
-    description: 'Tempered glass screen protector with 9H hardness. Easy installation with bubble-free technology.',
+    description:
+        'Tempered glass screen protector with 9H hardness. Easy installation with bubble-free technology.',
     rating: 4.7,
     reviews: 1025,
     image: 'data/images/10.jpg',
@@ -115,7 +126,8 @@ final List<Product> mockProducts = [
     id: 11,
     name: 'Phone Case Protective',
     price: 24.99,
-    description: 'Military-grade protective phone case with shock absorption. Available for multiple phone models.',
+    description:
+        'Military-grade protective phone case with shock absorption. Available for multiple phone models.',
     rating: 4.6,
     reviews: 567,
     image: 'data/images/11.jpg',
@@ -126,7 +138,8 @@ final List<Product> mockProducts = [
     id: 12,
     name: 'Bluetooth Speaker',
     price: 89.99,
-    description: 'Portable Bluetooth speaker with 360-degree sound and waterproof design. 24-hour battery life for endless music.',
+    description:
+        'Portable Bluetooth speaker with 360-degree sound and waterproof design. 24-hour battery life for endless music.',
     rating: 4.8,
     reviews: 445,
     image: 'data/images/12.jpg',
@@ -135,6 +148,7 @@ final List<Product> mockProducts = [
   ),
 ];
 
+
 final List<String> categories = [
   'All',
   'Electronics',
@@ -142,33 +156,63 @@ final List<String> categories = [
   'Accessories',
 ];
 
+
 final Map<String, dynamic> mockUserProfile = {
   'name': 'Pasan Kalhara',
   'email': 'kalhara@gmail.com',
-  'ordersCount': '12',
-  'totalSpent': '\$324.50',
-  'wishlistCount': '15',
-  'recentOrders': [
-    {
-      'orderNumber': '#ORD-001234',
-      'date': 'Dec 20, 2024',
-      'status': 'Delivered',
-      'amount': '\$149.99',
-      'statusColor': 'success',
-    },
-    {
-      'orderNumber': '#ORD-001233',
-      'date': 'Dec 15, 2024',
-      'status': 'Delivered',
-      'amount': '\$89.99',
-      'statusColor': 'success',
-    },
-    {
-      'orderNumber': '#ORD-001232',
-      'date': 'Dec 10, 2024',
-      'status': 'In Transit',
-      'amount': '\$45.99',
-      'statusColor': 'warning',
-    },
-  ],
+  'phone': '',
 };
+
+final List<Map<String, dynamic>> mockOrders = [
+  {
+    'orderNumber': '#ORD-001234',
+    'date': 'Dec 20, 2024',
+    'status': 'Delivered',
+    'amount': '\$149.99',
+    'statusColor': 'success',
+    'paymentMethod': 'Credit Card',
+    'address': '123 Main St, Colombo, WP 10000',
+    'items': [
+      {'name': 'Premium Wireless Headphones', 'qty': 1, 'price': '\$149.99'},
+    ],
+  },
+  {
+    'orderNumber': '#ORD-001233',
+    'date': 'Dec 15, 2024',
+    'status': 'Delivered',
+    'amount': '\$89.99',
+    'statusColor': 'success',
+    'paymentMethod': 'PayPal',
+    'address': '123 Main St, Colombo, WP 10000',
+    'items': [
+      {'name': 'Bluetooth Speaker', 'qty': 1, 'price': '\$89.99'},
+    ],
+  },
+  {
+    'orderNumber': '#ORD-001232',
+    'date': 'Dec 10, 2024',
+    'status': 'In Transit',
+    'amount': '\$45.99',
+    'statusColor': 'warning',
+    'paymentMethod': 'Credit Card',
+    'address': '456 Office Park, Colombo, WP 10200',
+    'items': [
+      {'name': 'Portable Phone Charger', 'qty': 1, 'price': '\$45.99'},
+    ],
+  },
+];
+
+
+final List<Map<String, dynamic>> mockAddresses = [
+  {
+    'id': 'addr_001',
+    'label': 'Home',
+    'fullName': 'Pasan Kalhara',
+    'phone': '+94 77 123 4567',
+    'street': '123 Main Street',
+    'city': 'Colombo',
+    'state': 'Western Province',
+    'zipCode': '10000',
+    'isDefault': true,
+  },
+];

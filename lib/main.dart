@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/providers/cart_provider.dart';
+import 'package:flutter_ecommerce/providers/product_provider.dart';
 import 'package:flutter_ecommerce/providers/theme_provider.dart';
 import 'package:flutter_ecommerce/providers/user_data_provider.dart';
 import 'package:flutter_ecommerce/screens/cart_screen.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => UserDataProvider()),
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
           return MaterialApp(
-            title: 'E-Commerce Store',
+            title: 'ShopHub',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme(),
             darkTheme: AppTheme.darkTheme(),
@@ -38,20 +40,25 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: (settings) {
               switch (settings.name) {
                 case '/home':
-                  return MaterialPageRoute(builder: (_) => const HomeScreen());
+                  return MaterialPageRoute(
+                      builder: (_) => const HomeScreen());
                 case '/cart':
-                  return MaterialPageRoute(builder: (_) => const CartScreen());
+                  return MaterialPageRoute(
+                      builder: (_) => const CartScreen());
                 case '/profile':
-                  return MaterialPageRoute(builder: (_) => const ProfileScreen());
+                  return MaterialPageRoute(
+                      builder: (_) => const ProfileScreen());
                 case '/splash':
-                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+                  return MaterialPageRoute(
+                      builder: (_) => const SplashScreen());
                 case '/orderDetail':
                   final order = settings.arguments as OrderItem;
                   return MaterialPageRoute(
                     builder: (_) => OrderDetailScreen(order: order),
                   );
                 default:
-                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+                  return MaterialPageRoute(
+                      builder: (_) => const SplashScreen());
               }
             },
           );
@@ -82,14 +89,9 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
-    
-    // Load cart and user data from local storage
-    Future.microtask(
-      () {
-        context.read<CartProvider>().loadCart();
-        // UserDataProvider loads data automatically in its constructor
-      },
-    );
+
+    // Load persisted cart on startup
+    Future.microtask(() => context.read<CartProvider>().loadCart());
   }
 
   @override
@@ -103,9 +105,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: (index) {
-          setState(() => _currentIndex = index);
-        },
+        onPageChanged: (i) => setState(() => _currentIndex = i),
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -114,27 +114,25 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          _pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
-        items: [
+        onTap: (i) => _pageController.animateToPage(
+          i,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        ),
+        items: const [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home_outlined),
-            activeIcon: const Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.shopping_cart_outlined),
-            activeIcon: const Icon(Icons.shopping_cart),
+            icon: Icon(Icons.shopping_cart_outlined),
+            activeIcon: Icon(Icons.shopping_cart),
             label: 'Cart',
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person_outline),
-            activeIcon: const Icon(Icons.person),
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],
