@@ -85,7 +85,7 @@ class _ProductCardState extends State<ProductCard>
                   child: Stack(
                     children: [
                       // Image with fallback
-                      Image.network(
+                      Image.asset(
                         widget.product.image,
                         fit: BoxFit.cover,
                         width: double.infinity,

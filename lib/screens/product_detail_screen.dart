@@ -96,7 +96,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 width: double.infinity,
                 height: 300,
                 color: AppColors.white,
-                child: Image.network(
+                child: Image.asset(
                   widget.product.image,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {

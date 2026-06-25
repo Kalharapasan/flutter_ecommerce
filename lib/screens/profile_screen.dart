@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce/data/mock_data.dart';
 import 'package:flutter_ecommerce/utils/constants.dart';
 import 'package:flutter_ecommerce/widgets/custom_app_bar.dart';
 
@@ -54,13 +55,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: AppSpacing.md),
                   // User Name
                   Text(
-                    'John Doe',
+                    mockUserProfile['name'] as String,
                     style: AppTextStyle.headlineLarge(),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   // Email
                   Text(
-                    'john.doe@example.com',
+                    mockUserProfile['email'] as String,
                     style: AppTextStyle.bodySmall(
                       color: AppColors.textSecondary,
                     ),
@@ -70,9 +71,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildStatItem('12', 'Orders'),
-                      _buildStatItem('\$324.50', 'Total Spent'),
-                      _buildStatItem('15', 'Wishlist'),
+                      _buildStatItem(mockUserProfile['ordersCount'] as String, 'Orders'),
+                      _buildStatItem(mockUserProfile['totalSpent'] as String, 'Total Spent'),
+                      _buildStatItem(mockUserProfile['wishlistCount'] as String, 'Wishlist'),
                     ],
                   ),
                 ],
@@ -90,29 +91,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: AppTextStyle.headlineSmall(),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  _buildOrderItem(
-                    orderNumber: '#ORD-001234',
-                    date: 'Dec 20, 2024',
-                    status: 'Delivered',
-                    amount: '\$149.99',
-                    statusColor: AppColors.success,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildOrderItem(
-                    orderNumber: '#ORD-001233',
-                    date: 'Dec 15, 2024',
-                    status: 'Delivered',
-                    amount: '\$89.99',
-                    statusColor: AppColors.success,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildOrderItem(
-                    orderNumber: '#ORD-001232',
-                    date: 'Dec 10, 2024',
-                    status: 'In Transit',
-                    amount: '\$45.99',
-                    statusColor: AppColors.warning,
-                  ),
+                  ...(mockUserProfile['recentOrders'] as List).map((orderItem) {
+                    final order = orderItem as Map<String, dynamic>;
+                    Color statusColor = AppColors.textSecondary;
+                    if (order['statusColor'] == 'success') {
+                      statusColor = AppColors.success;
+                    } else if (order['statusColor'] == 'warning') {
+                      statusColor = AppColors.warning;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: _buildOrderItem(
+                        orderNumber: order['orderNumber'] as String,
+                        date: order['date'] as String,
+                        status: order['status'] as String,
+                        amount: order['amount'] as String,
+                        statusColor: statusColor,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),

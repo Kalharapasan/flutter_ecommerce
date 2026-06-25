@@ -141,3 +141,34 @@ final List<String> categories = [
   'Wearables',
   'Accessories',
 ];
+
+final Map<String, dynamic> mockUserProfile = {
+  'name': 'Pasan Kalhara',
+  'email': 'kalhara@gmail.com',
+  'ordersCount': '12',
+  'totalSpent': '\$324.50',
+  'wishlistCount': '15',
+  'recentOrders': [
+    {
+      'orderNumber': '#ORD-001234',
+      'date': 'Dec 20, 2024',
+      'status': 'Delivered',
+      'amount': '\$149.99',
+      'statusColor': 'success',
+    },
+    {
+      'orderNumber': '#ORD-001233',
+      'date': 'Dec 15, 2024',
+      'status': 'Delivered',
+      'amount': '\$89.99',
+      'statusColor': 'success',
+    },
+    {
+      'orderNumber': '#ORD-001232',
+      'date': 'Dec 10, 2024',
+      'status': 'In Transit',
+      'amount': '\$45.99',
+      'statusColor': 'warning',
+    },
+  ],
+};
