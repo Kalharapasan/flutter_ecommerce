@@ -35,32 +35,29 @@ A modern, feature-rich e-commerce mobile application built with Flutter. The app
 ## 📁 Project Structure
 
 ```
-flutter_ecommerce/
-├── lib/
-│   ├── main.dart                    # App entry point
-│   ├── screens/
-│   │   ├── splash_screen.dart       # Splash/Login screen
-│   │   ├── home_screen.dart         # Product listing with filters
-│   │   ├── product_detail_screen.dart # Product details
-│   │   ├── cart_screen.dart         # Shopping cart
-│   │   └── profile_screen.dart      # User profile & orders
-│   ├── models/
-│   │   ├── product.dart             # Product data model
-│   │   └── cart_item.dart           # Cart item model
-│   ├── providers/
-│   │   └── cart_provider.dart       # Cart state management
-│   ├── widgets/
-│   │   ├── product_card.dart        # Reusable product card
-│   │   └── custom_app_bar.dart      # Custom app bar with cart badge
-│   ├── data/
-│   │   └── mock_data.dart           # Mock product data
-│   └── utils/
-│       └── constants.dart           # Colors, spacing, and themes
-├── assets/
-│   ├── images/                      # (Optional) Local images
-│   └── data/                        # (Optional) JSON data
-├── pubspec.yaml                     # Dependencies
-└── README.md                        # This file
+lib/
+├── main.dart                   
+├── model/
+│   ├── cart_item.dart
+│   └── product.dart
+├── providers/
+│   ├── cart_provider.dart
+│   ├── theme_provider.dart
+│   └── user_data_provider.dart 
+├── screens/
+│   ├── cart_screen.dart       
+│   ├── home_screen.dart
+│   ├── profile_screen.dart
+│   ├── product_detail_screen.dart
+│   ├── order_detail_screen.dart
+│   ├── address_screen.dart      
+│   ├── address_management_screen.dart  
+│   └── splash_screen.dart
+├── widgets/
+│   ├── custom_app_bar.dart
+│   └── product_card.dart
+└── utils/
+    └── constants.dart
 ```
 
 ## 🚀 Getting Started

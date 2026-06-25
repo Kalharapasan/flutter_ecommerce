@@ -178,33 +178,8 @@ class _CartScreenState extends State<CartScreen> {
       ),
       child: Row(
         children: [
-          // Product Image
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.05)
-                  : AppColors.borderLight,
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              child: Image.asset(
-                cartItem.product.image,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      size: 32,
-                      color: AppColors.textTertiary,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
+          // Product Image with proper error handling
+          _buildProductImage(cartItem.product.image),
           const SizedBox(width: AppSpacing.md),
           // Product Details
           Expanded(
@@ -312,6 +287,48 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  /// Build product image with multiple fallback options
+  Widget _buildProductImage(String imagePath) {
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white.withOpacity(0.05)
+            : AppColors.borderLight,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: _buildImage(imagePath),
+      ),
+    );
+  }
+
+  /// Build image with proper error handling and fallback
+  Widget _buildImage(String imagePath) {
+    // Try to load the image with proper error handling
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        // Fallback to a placeholder icon
+        return Container(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white.withOpacity(0.05)
+              : AppColors.borderLight,
+          child: const Center(
+            child: Icon(
+              Icons.image_not_supported,
+              size: 32,
+              color: AppColors.textTertiary,
+            ),
+          )
+        );
+      },
     );
   }
 

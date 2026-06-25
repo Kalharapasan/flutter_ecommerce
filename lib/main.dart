@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/providers/cart_provider.dart';
 import 'package:flutter_ecommerce/providers/theme_provider.dart';
+import 'package:flutter_ecommerce/providers/user_data_provider.dart';
 import 'package:flutter_ecommerce/screens/cart_screen.dart';
 import 'package:flutter_ecommerce/screens/home_screen.dart';
+import 'package:flutter_ecommerce/screens/order_detail_screen.dart';
 import 'package:flutter_ecommerce/screens/profile_screen.dart';
 import 'package:flutter_ecommerce/screens/splash_screen.dart';
 import 'package:flutter_ecommerce/utils/constants.dart';
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => UserDataProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
@@ -42,6 +45,11 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => const ProfileScreen());
                 case '/splash':
                   return MaterialPageRoute(builder: (_) => const SplashScreen());
+                case '/orderDetail':
+                  final order = settings.arguments as OrderItem;
+                  return MaterialPageRoute(
+                    builder: (_) => OrderDetailScreen(order: order),
+                  );
                 default:
                   return MaterialPageRoute(builder: (_) => const SplashScreen());
               }
@@ -75,9 +83,12 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
     
-    // Load cart from local storage
+    // Load cart and user data from local storage
     Future.microtask(
-      () => context.read<CartProvider>().loadCart(),
+      () {
+        context.read<CartProvider>().loadCart();
+        // UserDataProvider loads data automatically in its constructor
+      },
     );
   }
 
