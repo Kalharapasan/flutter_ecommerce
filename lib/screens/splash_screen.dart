@@ -3,7 +3,7 @@ import 'package:flutter_ecommerce/screens/home_screen.dart';
 import 'package:flutter_ecommerce/utils/constants.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();

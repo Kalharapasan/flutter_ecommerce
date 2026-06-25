@@ -3,7 +3,7 @@ import 'package:flutter_ecommerce/utils/constants.dart';
 import 'package:flutter_ecommerce/widgets/custom_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
